@@ -12,6 +12,8 @@ import { Router, Route} from "svelte-navigator";
 darkMode.useLocalStorage();
 language.useLocalStorage();
 history.useLocalStorage();
+groups.useLocalStorage();
+groups_timestamp.useLocalStorage();
 
 // init auth
 import PrivateRoute from "./PrivateRoute.svelte";
@@ -24,7 +26,7 @@ supabase.auth.onAuthStateChange((_, session) => {
 
 function handleLogout() {
 	supabase.auth.signOut()
-	groups.set("")
+	groups.set(null)
 	groups_timestamp.set("")
 }
 
@@ -54,7 +56,6 @@ document.documentElement.setAttribute('theme', $theme)
 authenticated.subscribe((value)=>{
 	name = value ? supabase.auth.user().email : "" ;
 })
-
 
 // init i18n 
 
@@ -124,8 +125,8 @@ history.set(history_array)
   </div>
   <HeaderNav>
 
-	<HeaderNavItem href="/" text={"Home"} />
-	<HeaderNavItem href="/about" text="About" />
+	<HeaderNavItem href="/" text={$_("home")} />
+	<HeaderNavItem href="/about" text={$_("page_title")} />
 	
 	{#if $authenticated} <!-- PrivateRoutes -->
 		<HeaderNavItem href="/groups" text="Groups" />
@@ -146,6 +147,16 @@ history.set(history_array)
 			<HeaderPanelLink>{name}</HeaderPanelLink>
 		{/if}
 
+		{#if size === "sm" || size === "md"}
+		<HeaderPanelDivider>Menu</HeaderPanelDivider>
+		<HeaderPanelLink href="/">Home</HeaderPanelLink>
+		<HeaderPanelLink href="/about">About</HeaderPanelLink>
+			{#if $authenticated}
+			<HeaderPanelLink href="/groups">Groups</HeaderPanelLink>
+			{/if}
+		{/if}
+
+
         <HeaderPanelDivider>{$_('settings')}</HeaderPanelDivider>
 
 
@@ -164,12 +175,7 @@ history.set(history_array)
 				  </Select>
 			
 
-		{#if size === "sm" || size === "md"}
-			<br/>
-			<HeaderPanelDivider>Menu</HeaderPanelDivider>
-			<HeaderPanelLink on:click={handleLogout}>Logout</HeaderPanelLink>
-		{/if}
-	
+
       </HeaderPanelLinks>
     </HeaderAction>
   </HeaderUtilities>

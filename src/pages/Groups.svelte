@@ -38,8 +38,6 @@ async function getCurrency () {
 }
 
 
-
-
 (async () => {
   let now =  (new Date().toISOString());
   if ($groups_timestamp < now)
@@ -96,7 +94,8 @@ currency.subscribe(async (value) => {
 {:else}
   {#if !loading}
         <DataTable
-        sortable
+        title="Groups"
+        description="Your organization's active load balancers."
         expandable
         size="tall"
         headers={[{ key: 'name', value: 'Name' }, { key: 'iso2', value: 'Owner' }, { key: 'iso3', value: 'Currency' }, { key: 'spendingcount', value: 'Count of Spendings' }]}

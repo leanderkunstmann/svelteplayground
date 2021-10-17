@@ -1,5 +1,7 @@
 {
     "page_title"  : "Svelte EN",
+    "home"        : "Home",
+    "about_us"    : "About us",
     "settings"    : "Settings",
     "language"    : "Language",
     "english"     : "English",

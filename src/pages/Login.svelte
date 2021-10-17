@@ -1,7 +1,7 @@
 <script>
 
   import {
-    FluidForm,
+    Form,
     TextInput,
     PasswordInput,
     Button,
@@ -14,6 +14,8 @@
   let loading = false
   let email;
   let password;
+  let invalid_password;
+  let invalid_text;
 	import {supabase} from "../supabaseClient"
   import { useNavigate, useLocation } from "svelte-navigator";
   const navigate = useNavigate();
@@ -42,7 +44,8 @@
         replace: true,
       });
     } catch (error) {
-      alert(error.error_description || error.message)
+      invalid_text= "Falsches PWdasfffffffffffffffasdf"
+      invalid_password= true
     } finally {
       loading = false
     }
@@ -61,6 +64,13 @@
     }
   }
 
+  if($authenticated)
+  (
+    navigate("/", {
+        state: { from: $location.pathname },
+        replace: true,
+      })
+  )
 
 </script>
 
@@ -69,22 +79,26 @@
   <Tab label="Registration" />
   <div slot="content">
     <TabContent>
-      <FluidForm on:submit={handleLoginEmailPassword}>
+      <Form on:submit={handleLoginEmailPassword}>
         <TextInput  type="email"  bind:value={email} labelText="E-Mail" placeholder="Enter E-Mail..." required />
+        <br>
         <PasswordInput
           required
           bind:value={password}
           type="password"
           labelText="Password"
           placeholder="Enter password..."
+          invalid={invalid_password}
+          invalidText="Incorrect user name or password."
         />
+        <br><br>
         <Button type="submit">Sign In</Button>
-      </FluidForm>
+      </Form>
     </TabContent>
 
 
     <TabContent>
-      <FluidForm on:submit={handleSignUp}>
+      <Form on:submit={handleSignUp}>
         <TextInput  type="email"  bind:value={email} labelText="E-Mail" placeholder="Enter E-Mail..." required />
         <PasswordInput
           required
@@ -100,7 +114,7 @@
         placeholder="Enter password again..."
       />
       <Button type="submit">Sign up</Button>
-      </FluidForm>
+      </Form>
     </TabContent>
   </div>
 </Tabs>

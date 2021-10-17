@@ -21,7 +21,7 @@ const createWritableStore = (key, startValue) => {
 
 export const language = createWritableStore('language', null)
 
-export const groups_timestamp = createWritableStore('groups_timestamp', null);
+export const groups_timestamp = createWritableStore('groups_timestamp', "");
 
 export const user = writable(null);
 
