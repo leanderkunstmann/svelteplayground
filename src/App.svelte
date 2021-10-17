@@ -8,7 +8,6 @@ import {authenticated, darkMode, groups, groups_timestamp, language, theme, hist
 import { Router, Route} from "svelte-navigator";
 
 // init localstorage sync 
-
 darkMode.useLocalStorage();
 language.useLocalStorage();
 history.useLocalStorage();
@@ -35,6 +34,8 @@ function handleLogout() {
 beforeUpdate(() => {
 	if (!$authenticated){
 		supabase.auth.session() ? authenticated.set(true) : authenticated.set(false)
+		if ($groups === undefined) {groups.set(null)}
+		
 	}
 });
 
@@ -102,6 +103,7 @@ let isOpen:boolean = false;
 import Login from "./pages/Login.svelte";
 import Home from "./pages/Home.svelte";
 import Groups from "./pages/Groups.svelte";
+import Storage from "./pages/Storage.svelte";
 
 // history
 
@@ -203,6 +205,10 @@ history.set(history_array)
 
 		  <PrivateRoute path="groups">
 			<Groups />
+		  </PrivateRoute>
+
+		  <PrivateRoute path="storage">
+			<Storage />
 		  </PrivateRoute>
 		</main>
 	  </Router>

@@ -33,9 +33,12 @@ export const theme = writable("g10")
 
 export const path = writable(true);
 
-export const groups = createWritableStore('groups', Object);
+export const groups = createWritableStore('groups', null);
 
 export const createGroup = writable(false);
+
+export const group_selection = writable([])
+export const children_store = writable([])
 
 export const currency = writable();
 

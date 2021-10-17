@@ -1,6 +1,6 @@
 <script>
 import {supabase} from "../supabaseClient"
-import {groups, groups_timestamp, createGroup, currency} from "../stores";
+import {groups, groups_timestamp, group_selection, createGroup, currency} from "../stores";
 
 //init localstorage sync 
 groups_timestamp.useLocalStorage();
@@ -9,6 +9,7 @@ groups.useLocalStorage();
 let loading_select = false;
 let loading = true;
 let all_currencies
+let isOwner = false
 
     import {
         FluidForm,
@@ -19,7 +20,8 @@ let all_currencies
         ToolbarContent,       
         Dropdown,
         InlineLoading,
-        Loading
+        Loading,
+        ToolbarBatchActions
     } from "carbon-components-svelte";
   
 
@@ -43,7 +45,7 @@ async function getCurrency () {
   if ($groups_timestamp < now)
   {
     groups_timestamp.set(new Date(Date.now() + (2 * 60 * 1000)));
-    let data = await GetData('countries');
+    let data = await GetData('groups');
       groups.set(data.body)
       loading = false
   } 
@@ -66,6 +68,23 @@ currency.subscribe(async (value) => {
     loading_select = false
   }
 })
+
+group_selection.subscribe((value) => {
+  if ($group_selection.length > 0){
+    console.log($group_selection)
+  let uid = supabase.auth.user().id
+  $groups[value[0]-1].owner === uid ? isOwner = true : isOwner = false;
+
+  console.log('db owner '+ $groups[value[0]-1].owner)
+  console.log('uid '+ uid )
+}
+})
+
+let selectedRowIds = [];
+
+function leaveGroup(){
+  console.log($groups[$group_selection[0]-1])
+}
 
 
 </script>  
@@ -98,10 +117,19 @@ currency.subscribe(async (value) => {
         description="Your organization's active load balancers."
         expandable
         size="tall"
-        headers={[{ key: 'name', value: 'Name' }, { key: 'iso2', value: 'Owner' }, { key: 'iso3', value: 'Currency' }, { key: 'spendingcount', value: 'Count of Spendings' }]}
+        headers={[{ key: 'group_name', value: 'Name' }, { key: 'owner', value: 'Owner' }, { key: 'member', value: 'Member' }, { key: 'main_currency', value: 'currency' }]}
         rows={$groups}
+        radio bind:selectedRowIds={$group_selection}
       >
       <Toolbar>
+        <ToolbarBatchActions>
+          {#if isOwner}
+          <Button on:click={() => {leaveGroup()}}>Delete</Button>
+          <Button on:click={() => {leaveGroup()}}>Transfer</Button>
+          {:else}
+          <Button on:click={() => {leaveGroup()}}>Leave</Button>
+          {/if}
+        </ToolbarBatchActions>
         <ToolbarContent>
           <Button on:click={ async() => (createGroup.set(!$createGroup))}>$_('create-new-group')</Button>
         </ToolbarContent>

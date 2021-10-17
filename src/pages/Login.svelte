@@ -15,7 +15,6 @@
   let email;
   let password;
   let invalid_password;
-  let invalid_text;
 	import {supabase} from "../supabaseClient"
   import { useNavigate, useLocation } from "svelte-navigator";
   const navigate = useNavigate();
