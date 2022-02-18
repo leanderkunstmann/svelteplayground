@@ -1,9 +1,9 @@
 {
     "page_title"  : "Svelte DE",
     "home"        : "Home",
-    "about_us"        : "Über uns",
+    "about_us"    : "Über uns",
     "settings"    : "Einstellungen",
-    "language"     : "Sprache",
+    "language"    : "Sprache",
     "english"     : "Englisch",
-    "german"    : "Deutsch"
+    "german"      : "Deutsch"
   }

@@ -1,6 +1,6 @@
 <script>
-import {supabase} from "../supabaseClient"
-import {groups, groups_timestamp, group_selection, createGroup, currency} from "../stores";
+import {supabase} from "../auth/supabaseClient"
+import {groups, groups_timestamp, group_selection, createGroup, currency} from "../services/stores";
 
 //init localstorage sync 
 groups_timestamp.useLocalStorage();

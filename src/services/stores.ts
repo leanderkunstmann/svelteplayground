@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 
-const createWritableStore = (key, startValue) => {
+const createWritableStore = (key: string, startValue: string | boolean | string[] | null) => {
   const { subscribe, set } = writable(startValue);
   
   return {
@@ -38,13 +38,12 @@ export const groups = createWritableStore('groups', null);
 export const createGroup = writable(false);
 
 export const group_selection = writable([])
+
 export const children_store = writable([])
 
 export const currency = writable();
 
 export const history:any = createWritableStore('history', ["/"]);
-
-
 
 
 export const chart_data = writable();

@@ -14,7 +14,6 @@
     "@rollup/plugin-node-resolve": "^11.0.0",
     "@rollup/plugin-replace": "^3.0.0",
     "@rollup/plugin-typescript": "^8.3.0",
-    "@smui/top-app-bar": "^4.2.0",
     "@tsconfig/svelte": "^2.0.0",
     "dotenv": "^10.0.0",
     "rollup": "^2.58.0",
@@ -29,7 +28,6 @@
     "typescript": "4.3.5"
   },
   "dependencies": {
-    "@roxi/routify": "^2.18.3",
     "@supabase/supabase-js": "^1.24.0",
     "carbon-components-svelte": "^0.45.1",
     "process": "^0.11.10",

@@ -5,7 +5,7 @@ import { Button } from 'carbon-components-svelte';
 
 import { onMount } from 'svelte';
 import { chart } from "svelte-apexcharts";
-import {chart_data, show_chart, counter} from "../stores";
+import {chart_data, show_chart, counter} from "../services/stores";
 
                     
 function randomArray(length:number,range:number){

@@ -8,14 +8,14 @@
     Tabs, Tab, TabContent
   } from "carbon-components-svelte";
 
-  import {history, authenticated} from "../stores";
+  import {history, authenticated} from "../services/stores";
 
 
   let loading = false
   let email;
   let password;
   let invalid_password;
-	import {supabase} from "../supabaseClient"
+	import {supabase} from "../auth/supabaseClient"
   import { useNavigate, useLocation } from "svelte-navigator";
   const navigate = useNavigate();
   const location = useLocation();

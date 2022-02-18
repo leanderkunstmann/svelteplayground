@@ -1,10 +1,10 @@
 <script lang="ts">
 
 import "carbon-components-svelte/css/all.css";
-import { afterUpdate, beforeUpdate} from 'svelte';
-import "./services/i18n"
+import {beforeUpdate} from 'svelte';
+import "./services/i18n.ts"
 import { _ , init,  getLocaleFromNavigator} from 'svelte-i18n';
-import {authenticated, darkMode, groups, groups_timestamp, language, theme, history} from "./stores";
+import {authenticated, darkMode, groups, groups_timestamp, language, theme, history} from "./services/stores";
 import { Router, Route} from "svelte-navigator";
 
 // init localstorage sync 
@@ -15,9 +15,9 @@ groups.useLocalStorage();
 groups_timestamp.useLocalStorage();
 
 // init auth
-import PrivateRoute from "./PrivateRoute.svelte";
-import {supabase} from "./supabaseClient"
-let name:string
+import PrivateRoute from "./routing/PrivateRouteWrapper.svelte";
+import {supabase} from "./auth/supabaseClient"
+let user_identifier:string
 
 supabase.auth.onAuthStateChange((_, session) => {
 	session ? authenticated.set(true) : authenticated.set(false)
@@ -30,12 +30,10 @@ function handleLogout() {
 }
 
 // auth lifecycle
-
 beforeUpdate(() => {
 	if (!$authenticated){
 		supabase.auth.session() ? authenticated.set(true) : authenticated.set(false)
 		if ($groups === undefined) {groups.set(null)}
-		
 	}
 });
 
@@ -55,10 +53,11 @@ document.documentElement.setAttribute('theme', $theme)
 })
 
 authenticated.subscribe((value)=>{
-	name = value ? supabase.auth.user().email : "" ;
+	user_identifier = value ? supabase.auth.user().email : "" ;
 })
 
 // init i18n 
+//todo: keine Ahnung warum Intellj hier meckert, geht einwandfrei, hatte noch keine Lust mich hiermit zu beschäftigen
 
 init({
 	fallbackLocale: 'en-US',
@@ -93,8 +92,8 @@ SelectItem
 
 // UI specific variables
 
-let size:any;
-let events:any = [];
+let size:string;
+let events:Array<any> = [];
 let isOpen:boolean = false;
 
 
@@ -122,99 +121,92 @@ history.set(history_array)
 
 <Breakpoint bind:size on:match={(e) => (events = [...events, e.detail])} />
 <Header platformName={$_("page_title")}>
-  <div slot="skip-to-content">
-    <SkipToContent />
-  </div>
-  <HeaderNav>
+	<div slot="skip-to-content">
+		<SkipToContent />
+	</div>
 
-	<HeaderNavItem href="/" text={$_("home")} />
-	<HeaderNavItem href="/about" text={$_("page_title")} />
-	
-	{#if $authenticated} <!-- PrivateRoutes -->
-		<HeaderNavItem href="/groups" text="Groups" />
-	{/if}
-
-</HeaderNav>
-
-  <HeaderUtilities>
-	{#if $authenticated}
 	<HeaderNav>
-		<HeaderNavItem text="{name}"/>
+		<HeaderNavItem href="/" text={$_("home")} />
+		<HeaderNavItem href="/about" text={$_("page_title")} />
+
+		{#if $authenticated} <!-- PrivateRoutes -->
+			<HeaderNavItem href="/groups" text="Groups" />
+		{/if}
 	</HeaderNav>
-	{/if}
-    <HeaderAction bind:isOpen>
-      <HeaderPanelLinks>
 
-		{#if (size === "sm" || size === "md") &&  $authenticated}
-			<HeaderPanelLink>{name}</HeaderPanelLink>
-		{/if}
-
-		{#if size === "sm" || size === "md"}
-		<HeaderPanelDivider>Menu</HeaderPanelDivider>
-		<HeaderPanelLink href="/">Home</HeaderPanelLink>
-		<HeaderPanelLink href="/about">About</HeaderPanelLink>
-			{#if $authenticated}
-			<HeaderPanelLink href="/groups">Groups</HeaderPanelLink>
-			{/if}
-		{/if}
-
-
-        <HeaderPanelDivider>{$_('settings')}</HeaderPanelDivider>
-
-
+	<HeaderUtilities>
 		{#if $authenticated}
-			<HeaderPanelLink on:click={handleLogout}>Logout</HeaderPanelLink>
-		{:else}
-			<HeaderPanelLink href="/login">Login</HeaderPanelLink>
+			<HeaderNav>
+				<HeaderNavItem text="{user_identifier}"/>
+			</HeaderNav>
 		{/if}
+
+		<HeaderAction bind:isOpen>
+		  <HeaderPanelLinks>
+
+			{#if (size === "sm" || size === "md") &&  $authenticated}
+				<HeaderPanelLink>{user_identifier}</HeaderPanelLink>
+			{/if}
+
+			{#if size === "sm" || size === "md"}
+				<HeaderPanelDivider>Menu</HeaderPanelDivider>
+				<HeaderPanelLink href="/">Home</HeaderPanelLink>
+				<HeaderPanelLink href="/about">About</HeaderPanelLink>
+				{#if $authenticated}
+					<HeaderPanelLink href="/groups">Groups</HeaderPanelLink>
+				{/if}
+			{/if}
+
+			<HeaderPanelDivider>{$_('settings')}</HeaderPanelDivider>
+
+			{#if $authenticated}
+				<HeaderPanelLink on:click={handleLogout}>Logout</HeaderPanelLink>
+			{:else}
+				<HeaderPanelLink href="/login">Login</HeaderPanelLink>
+			{/if}
 			<HeaderPanelLink>Dark Mode <Toggle toggled={$darkMode} on:toggle={() => darkMode.set(!$darkMode)} /></HeaderPanelLink>
-			<br><br><br>	
+			<br><br><br>
 			<HeaderPanelDivider>{$_('language')}</HeaderPanelDivider>
-				<Select id="language_selector"  selected={$language} on:change={updateLanguage}>
+				<Select   id="language_selector"  selected={$language} on:change={updateLanguage}>
 					<SelectItem value="en-US" text={$_('english')} />
 					<SelectItem value="de-DE" text={$_('german')} />
+				</Select>
 
-				  </Select>
-			
-
-
-      </HeaderPanelLinks>
-    </HeaderAction>
-  </HeaderUtilities>
+		  </HeaderPanelLinks>
+		</HeaderAction>
+	  </HeaderUtilities>
 </Header>
-
 
 
 <Content>
   <Grid>
 	<Router primary={false}>
 		<main>
-		  <Route path="login">
-			<Login/>
-		  </Route>
-	  
-		  <Route path="/">
-			<Home />
-		  </Route>
 
-		  <Route path="sort">
-		  </Route> 
-	
-		  <PrivateRoute path="profile" >
-		  </PrivateRoute>
+			<Route path="/">
+				<Home />
+			</Route>
 
-		  <PrivateRoute path="groups">
-			<Groups />
-		  </PrivateRoute>
+		  	<Route path="login">
+				<Login/>
+		  	</Route>
 
-		  <PrivateRoute path="storage">
-			<Storage />
-		  </PrivateRoute>
+
+		  	<Route path="sort">
+		  	</Route>
+
+		  	<PrivateRoute path="profile" >
+		  	</PrivateRoute>
+
+		  	<PrivateRoute path="groups">
+				<Groups />
+		  	</PrivateRoute>
+
+		  	<PrivateRoute path="storage">
+				<Storage />
+		  	</PrivateRoute>
+
 		</main>
 	  </Router>
-
   </Grid>
-
-
-
 </Content>
