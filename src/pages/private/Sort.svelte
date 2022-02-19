@@ -1,14 +1,12 @@
-<script >
-import { Button } from 'carbon-components-svelte';
+<script lang="ts">
+
+    //todo: UNDER CONSTRUCTION
+
+import {chart_data, show_chart, counter} from "../../services/stores";
 
 
-
-import { onMount } from 'svelte';
-import { chart } from "svelte-apexcharts";
-import {chart_data, show_chart, counter} from "../services/stores";
-
-                    
-function randomArray(length:number,range:number){
+//todo: check datatypes (if number or bigint etc)
+function randomArray(length:Number,range: number){
     let arr:Array<Number> =[...new Array(length)]
         .map(() => Math.round(Math.random() * range));
         console.log(arr)

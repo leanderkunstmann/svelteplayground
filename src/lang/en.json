@@ -1,10 +1,19 @@
 {
-    "page_title"  : "Svelte EN",
-    "home"        : "Home",
-    "about_us"    : "About us",
-    "settings"    : "Settings",
-    "language"    : "Language",
-    "english"     : "English",
-    "german"      : "German"
+  "HOME": {
+    "Welcome": "Svelte Tryout",
+    "about_us": "About us",
+    "english": "English",
+    "german": "German",
+    "home": "Home",
+    "language": "Language",
+    "page_title": "Svelte EN",
+    "settings": "Settings"
+  },
+  "LOGIN": {
+    "Tab": {
+      "LoginMagic": "MagicLink",
+      "LoginMail": "Login",
+      "SignUp": "Sign Up"
+    }
   }
-  
+}

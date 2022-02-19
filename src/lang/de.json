@@ -1,9 +1,19 @@
 {
-    "page_title"  : "Svelte DE",
-    "home"        : "Home",
-    "about_us"    : "Über uns",
-    "settings"    : "Einstellungen",
-    "language"    : "Sprache",
-    "english"     : "Englisch",
-    "german"      : "Deutsch"
+  "HOME": {
+    "Welcome": "Svelte Wrapper",
+    "about_us": "Über uns",
+    "english": "Englisch",
+    "german": "Deutsch",
+    "home": "Home",
+    "language": "Sprache",
+    "page_title": "Svelte DE",
+    "settings": "Einstellungen"
+  },
+  "LOGIN": {
+    "Tab": {
+      "LoginMagic": "Zauberei",
+      "LoginMail": "Login",
+      "SignUp": "Registrieren"
+    }
   }
+}

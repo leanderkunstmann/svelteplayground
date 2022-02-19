@@ -1,136 +1,157 @@
 <script lang="ts">
 
-import "carbon-components-svelte/css/all.css";
-import {beforeUpdate} from 'svelte';
-import "./services/i18n.ts"
-import { _ , init,  getLocaleFromNavigator} from 'svelte-i18n';
-import {authenticated, darkMode, groups, groups_timestamp, language, theme, history} from "./services/stores";
-import { Router, Route} from "svelte-navigator";
+	import {
+		Breakpoint,
+		Header,
+		HeaderUtilities,
+		HeaderAction,
+		HeaderPanelLinks,
+		HeaderPanelDivider,
+		HeaderPanelLink,
+		SkipToContent,
+		Content,
+		Grid,
+		HeaderNavItem,
+		HeaderNav,
+		Toggle,
+		Select,
+		SelectItem,
+		Tile
+	} from "carbon-components-svelte";
 
-// init localstorage sync 
-darkMode.useLocalStorage();
-language.useLocalStorage();
-history.useLocalStorage();
-groups.useLocalStorage();
-groups_timestamp.useLocalStorage();
+	import "carbon-components-svelte/css/all.css";
+	import {beforeUpdate} from 'svelte';
+	import "./services/i18n.ts"
+	import { _ , init,  getLocaleFromNavigator} from 'svelte-i18n';
+	import {authenticated, darkMode, groups, reload_gr, language, theme, history} from "./services/stores";
+	import { Router, Route} from "svelte-navigator";
+	import PrivateRoute from "./routing/PrivateRouteWrapper.svelte";
+	import {supabase} from "./auth/supabaseClient"
 
-// init auth
-import PrivateRoute from "./routing/PrivateRouteWrapper.svelte";
-import {supabase} from "./auth/supabaseClient"
-let user_identifier:string
+	// ROUTING
 
-supabase.auth.onAuthStateChange((_, session) => {
-	session ? authenticated.set(true) : authenticated.set(false)
-})
+	// --> mainRoute, Landing-/Homepage
 
-function handleLogout() {
-	supabase.auth.signOut()
-	groups.set(null)
-	groups_timestamp.set("")
-}
+	import Home from "./pages/public/Home.svelte";
 
-// auth lifecycle
-beforeUpdate(() => {
-	if (!$authenticated){
-		supabase.auth.session() ? authenticated.set(true) : authenticated.set(false)
-		if ($groups === undefined) {groups.set(null)}
+	// ---> publicRoutes, accessible for everyone
+
+	import Login from "./pages/public/Login.svelte";
+
+	const publicRoutes = [
+		{ id: Login},
+	];
+
+	// ---> privateRoutes, accessible for authenticated Users
+
+	import Groups from "./pages/private/Groups.svelte";
+	import Storage from "./pages/private/Storage.svelte";
+
+	const privateRoutes = [
+		{ id: Groups},
+		{ id: Storage},
+	];
+
+
+	// init localstorage sync
+	darkMode.useLocalStorage();
+	language.useLocalStorage();
+	history.useLocalStorage();
+	groups.useLocalStorage();
+	reload_gr.useLocalStorage();
+
+	// UI specific variables
+	let size:string;
+	let events:Array<any> = [];
+	let isOpen:boolean = false;
+	let user_identifier:string
+
+	supabase.auth.onAuthStateChange((_, session) => {
+		session ? authenticated.set(true) : authenticated.set(false)
+	})
+
+	function handleLogout() {
+		supabase.auth.signOut()
+		groups.set(null)
+		reload_gr.set("")
 	}
-});
 
-// store subscriptions
+	// auth lifecycle
+	beforeUpdate(() => {
+		if (!$authenticated){
+			supabase.auth.session() ? authenticated.set(true) : authenticated.set(false)
+			if ($groups === undefined) {groups.set(null)}
+		}
+	});
 
-language.subscribe((value) => {
-	if (!value){
-	language.set(getLocaleFromNavigator())
-}})
+	// store subscriptions
 
-darkMode.subscribe ((value) => { 
-	value ? theme.set("g100") : theme.set("g10");
-})
+	language.subscribe((value) => {
+		if (!value){
+			language.set(getLocaleFromNavigator())
+		}
+	})
 
-theme.subscribe (()=> { 
-document.documentElement.setAttribute('theme', $theme)
-})
+	darkMode.subscribe ((value) => {
+		value ? theme.set("g100") : theme.set("g10");
+	})
 
-authenticated.subscribe((value)=>{
-	user_identifier = value ? supabase.auth.user().email : "" ;
-})
+	theme.subscribe (()=> {
+		document.documentElement.setAttribute('theme', $theme)
+	})
 
-// init i18n 
-//todo: keine Ahnung warum Intellj hier meckert, geht einwandfrei, hatte noch keine Lust mich hiermit zu beschäftigen
+	authenticated.subscribe((value)=>{
+		user_identifier = value ? supabase.auth.user()!.email  : "" ;
+	})
 
-init({
-	fallbackLocale: 'en-US',
-	initialLocale: $language,
-});
+	// init i18n
+	//todo: keine Ahnung warum Intellj hier meckert, geht einwandfrei, hatte noch keine Lust mich hiermit zu beschäftigen
 
-const updateLanguage =(() => {
-	language.set((<HTMLSelectElement>document.getElementById("language_selector")).value)
 	init({
 		fallbackLocale: 'en-US',
 		initialLocale: $language,
 	});
-})
 
-import {
-Breakpoint,
-Header,
-HeaderUtilities,
-HeaderAction,
-HeaderPanelLinks,
-HeaderPanelDivider,
-HeaderPanelLink,
-SkipToContent,
-Content,
-Grid,
-HeaderNavItem,
-HeaderNav,
-Toggle,
-Select, 
-SelectItem 
-} from "carbon-components-svelte";
+	const updateLanguage =(() => {
+		language.set((<HTMLSelectElement>document.getElementById("language_selector")).value)
+		init({
+			fallbackLocale: 'en-US',
+			initialLocale: $language,
+		});
+	})
 
-// UI specific variables
+	// history
 
-let size:string;
-let events:Array<any> = [];
-let isOpen:boolean = false;
+	let history_array:string[] = $history
 
+	history_array.unshift(window.location.pathname)
 
-// routes
-
-import Login from "./pages/Login.svelte";
-import Home from "./pages/Home.svelte";
-import Groups from "./pages/Groups.svelte";
-import Storage from "./pages/Storage.svelte";
-
-// history
-
-
-let history_array:string[] = $history
-history_array.unshift(window.location.pathname)
-if  (history_array.length > 2) {
-	history_array.pop()
+	if (history_array.length > 2) {
+		history_array.pop()
 	}
-history.set(history_array)
 
-
+	history.set(history_array)
 
 </script>
 
 
 <Breakpoint bind:size on:match={(e) => (events = [...events, e.detail])} />
-<Header platformName={$_("page_title")}>
+
+<Header platformName={$_("HOME.page_title")}>
 	<div slot="skip-to-content">
 		<SkipToContent />
 	</div>
 
 	<HeaderNav>
-		<HeaderNavItem href="/" text={$_("home")} />
-		<HeaderNavItem href="/about" text={$_("page_title")} />
+		<HeaderNavItem href="/" text={$_("HOME.home")} />
+		{#each publicRoutes as route}
+			<HeaderNavItem href={route.id.toString().split(" ")[1].toLowerCase()} text={$_("HOME."+ route.id.toString().split(" ")[1].toLowerCase() )}/>
+		{/each}
 
 		{#if $authenticated} <!-- PrivateRoutes -->
-			<HeaderNavItem href="/groups" text="Groups" />
+			{#each privateRoutes as route}
+				<HeaderNavItem href={route.id.toString().split(" ")[1].toLowerCase()} text={$_("HOME."+ route.id.toString().split(" ")[1].toLowerCase() )}/>
+			{/each}
 		{/if}
 	</HeaderNav>
 
@@ -157,7 +178,7 @@ history.set(history_array)
 				{/if}
 			{/if}
 
-			<HeaderPanelDivider>{$_('settings')}</HeaderPanelDivider>
+			<HeaderPanelDivider>{$_('HOME.settings')}</HeaderPanelDivider>
 
 			{#if $authenticated}
 				<HeaderPanelLink on:click={handleLogout}>Logout</HeaderPanelLink>
@@ -166,10 +187,10 @@ history.set(history_array)
 			{/if}
 			<HeaderPanelLink>Dark Mode <Toggle toggled={$darkMode} on:toggle={() => darkMode.set(!$darkMode)} /></HeaderPanelLink>
 			<br><br><br>
-			<HeaderPanelDivider>{$_('language')}</HeaderPanelDivider>
+			<HeaderPanelDivider>{$_('HOME.language')}</HeaderPanelDivider>
 				<Select   id="language_selector"  selected={$language} on:change={updateLanguage}>
-					<SelectItem value="en-US" text={$_('english')} />
-					<SelectItem value="de-DE" text={$_('german')} />
+					<SelectItem value="en-US" text={$_('HOME.english')} />
+					<SelectItem value="de-DE" text={$_('HOME.german')} />
 				</Select>
 
 		  </HeaderPanelLinks>
@@ -182,29 +203,27 @@ history.set(history_array)
   <Grid>
 	<Router primary={false}>
 		<main>
-
 			<Route path="/">
 				<Home />
 			</Route>
 
-		  	<Route path="login">
-				<Login/>
-		  	</Route>
+			<!--Wrapper for publicRoutes-->
+			{#each publicRoutes as route}
+				<Route path={route.id.toString().split(" ")[1].toLowerCase()}>
+					<Tile>
+						<svelte:component this={route.id}/>
+					</Tile>
+				</Route>
+			{/each}
 
-
-		  	<Route path="sort">
-		  	</Route>
-
-		  	<PrivateRoute path="profile" >
-		  	</PrivateRoute>
-
-		  	<PrivateRoute path="groups">
-				<Groups />
-		  	</PrivateRoute>
-
-		  	<PrivateRoute path="storage">
-				<Storage />
-		  	</PrivateRoute>
+			<!--Wrapper for privateRoutes-->
+			{#each privateRoutes as route}
+				<PrivateRoute path={route.id.toString().split(" ")[1].toLowerCase()}>
+					<Tile>
+						<svelte:component this={route.id}/>
+					</Tile>
+				</PrivateRoute>
+			{/each}
 
 		</main>
 	  </Router>

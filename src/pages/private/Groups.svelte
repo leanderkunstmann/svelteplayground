@@ -1,9 +1,9 @@
 <script>
-import {supabase} from "../auth/supabaseClient"
-import {groups, groups_timestamp, group_selection, createGroup, currency} from "../services/stores";
+import {supabase} from "../../auth/supabaseClient"
+import {groups, reload_gr, group_selection, createGroup, currency} from "../../services/stores";
 
 //init localstorage sync 
-groups_timestamp.useLocalStorage();
+reload_gr.useLocalStorage();
 groups.useLocalStorage();
 
 let loading_select = false;
@@ -11,18 +11,18 @@ let loading = true;
 let all_currencies
 let isOwner = false
 
-    import {
-        FluidForm,
-        TextInput,
-        Button,
-        DataTable,
-        Toolbar,
-        ToolbarContent,       
-        Dropdown,
-        InlineLoading,
-        Loading,
-        ToolbarBatchActions
-    } from "carbon-components-svelte";
+import {
+    FluidForm,
+    TextInput,
+    Button,
+    DataTable,
+    Toolbar,
+    ToolbarContent,
+    Dropdown,
+    InlineLoading,
+    Loading,
+    ToolbarBatchActions,
+} from "carbon-components-svelte";
   
 
 async function GetData(string){
@@ -42,9 +42,9 @@ async function getCurrency () {
 
 (async () => {
   let now =  (new Date().toISOString());
-  if ($groups_timestamp < now)
+  if ($reload_gr < now)
   {
-    groups_timestamp.set(new Date(Date.now() + (2 * 60 * 1000)));
+    reload_gr.set(new Date(Date.now() + (2 * 60 * 1000)));
     let data = await GetData('groups');
       groups.set(data.body)
       loading = false
@@ -87,7 +87,8 @@ function leaveGroup(){
 }
 
 
-</script>  
+</script>
+
 {#if $createGroup}
 <FluidForm>
   <TextInput  type="group_name" labelText="Group Name" placeholder="$_('enter-group-name')" required />

@@ -21,7 +21,7 @@ const createWritableStore = (key: string, startValue: string | boolean | string[
 
 export const language = createWritableStore('language', null)
 
-export const groups_timestamp = createWritableStore('groups_timestamp', "");
+export const reload_gr = createWritableStore('groups_timestamp', "");
 
 export const user = writable(null);
 

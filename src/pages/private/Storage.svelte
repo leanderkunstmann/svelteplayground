@@ -1,10 +1,10 @@
 <script>
 
-import {supabase} from "../auth/supabaseClient"
+import {supabase} from "../../auth/supabaseClient"
 import { onMount } from 'svelte';
 
 import { RecursiveList,TreeView } from "carbon-components-svelte";
-import {children_store} from "../services/stores";
+import {children_store} from "../../services/stores";
 
 let loading = true;
 
@@ -70,13 +70,15 @@ const downloadFiles = async (e) => {
    .from(bucket)
    .download(downPath)
 
-   var anchor = angular.element('<a/>');
+/*  var anchor = angular.element('<a/>');
      anchor.attr({
          href: 'data:attachment/csv;charset=utf-8,' + encodeURI(data),
          target: '_blank',
          download: e.detai
-     })[0].click();
+     })[0].click();'
 
+
+*/
 }
 
 </script>
