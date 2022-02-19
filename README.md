@@ -30,7 +30,7 @@ npm install
 npm run dev
 ```
 
-Navigate to [localhost:5000](http://localhost:3000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
+Navigate to [localhost:3000](http://localhost:3000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
 
 By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
 
@@ -59,6 +59,8 @@ If you're building a single-page app (SPA) with multiple routes, sirv needs to b
 
 ## Tauri App
 
+If you plan on using the Tauri implementation, please read the tutorials and information on breaking changes and security on their [website](https://tauri.studio/)
+
 If you delete the src-tauri folder, you can create your own config with:
 
 ```bash
@@ -75,4 +77,10 @@ This will only work, if you run the dev server of the svelte webapp in a differe
 
 ```bash
 npm run dev
+```
+
+To build your project:
+
+```bash
+npm run tauri build
 ```
