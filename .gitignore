@@ -3,3 +3,6 @@ node_modules
 /public/build
 /.vscode
 /.idea
+target\
+WixTools\
+package-lock.json

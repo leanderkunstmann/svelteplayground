@@ -1,19 +1,18 @@
-*Looking for a shareable component template? Go here --> [sveltejs/component-template](https://github.com/sveltejs/component-template)*
+# svelte playground
 
----
+This is a svelte frontend skeleton, with auth, i18n, db and ui features, that has a scalable approach and aims to be deployed configurable through a user.
 
-# svelte app
+This is a project from https://github.com/sveltejs/template. (Typescript usage)
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
-
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
-
-```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
-```
+To use it with backend, you need to include a .env file (see example) with supabase credentials for auth and the other services.
 
 *Note that you will need to have [Node.js](https://nodejs.org) installed.*
+
+## Roadmap
+- example use cases for this svelte frontend skeleton 
+- inlude tests and build-minify wrapper + security relevant features.
+- dockerfile and scalable configuration for usage with loadbalancers.
+- auth + db wrapper with .env configuration to enable different auth-providers (firebase auth + storage, keycloak + mongodb, ...) and db providers via environment variable
 
 
 ## Get started
@@ -21,7 +20,7 @@ cd svelte-app
 Install the dependencies...
 
 ```bash
-cd svelte-app
+cd svelte-auth
 npm install
 ```
 
@@ -31,7 +30,7 @@ npm install
 npm run dev
 ```
 
-Navigate to [localhost:5000](http://localhost:5000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
+Navigate to [localhost:5000](http://localhost:3000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
 
 By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
 
@@ -58,50 +57,22 @@ If you're building a single-page app (SPA) with multiple routes, sirv needs to b
 "start": "sirv public --single"
 ```
 
-## Using TypeScript
+## Tauri App
 
-This template comes with a script to set up a TypeScript development environment, you can run it immediately after cloning the template with:
+If you delete the src-tauri folder, you can create your own config with:
 
 ```bash
-node scripts/setupTypeScript.js
+npm run tauri init
 ```
 
-Or remove the script via:
+Using the included config you need to run:
 
 ```bash
-rm scripts/setupTypeScript.js
+npm run tauri dev
 ```
 
-If you want to use `baseUrl` or `path` aliases within your `tsconfig`, you need to set up `@rollup/plugin-alias` to tell Rollup to resolve the aliases. For more info, see [this StackOverflow question](https://stackoverflow.com/questions/63427935/setup-tsconfig-path-in-svelte).
-
-## Deploying to the web
-
-### With [Vercel](https://vercel.com)
-
-Install `vercel` if you haven't already:
+This will only work, if you run the dev server of the svelte webapp in a different terminal, as it uses the localhost in dev-mode.
 
 ```bash
-npm install -g vercel
-```
-
-Then, from within your project folder:
-
-```bash
-cd public
-vercel deploy --name my-project
-```
-
-### With [surge](https://surge.sh/)
-
-Install `surge` if you haven't already:
-
-```bash
-npm install -g surge
-```
-
-Then, from within your project folder:
-
-```bash
-npm run build
-surge public my-project.surge.sh
+npm run dev
 ```

@@ -6,7 +6,8 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public --no-clear -s --port 3000 --host 0.0.0.0",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "tauri": "tauri"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
@@ -14,6 +15,7 @@
     "@rollup/plugin-node-resolve": "^11.0.0",
     "@rollup/plugin-replace": "^3.0.0",
     "@rollup/plugin-typescript": "^8.3.0",
+    "@tauri-apps/cli": "^1.0.0-rc.5",
     "@tsconfig/svelte": "^2.0.0",
     "dotenv": "^10.0.0",
     "rollup": "^2.58.0",

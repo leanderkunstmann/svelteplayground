@@ -27,7 +27,7 @@
 
   //handle redirect if logged in
   if($authenticated) {
-    navigate($history[0], {
+    navigate('/', {
       state: {from: $location.pathname},
       replace: true,
     })
